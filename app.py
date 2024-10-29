@@ -29,13 +29,6 @@ def verify():
     )
 
     # Casos de Erro
-    if ipaq_result in [IPAQ.MUITO_ATIVO, IPAQ.ATIVO, IPAQ.IRREGULARMENTE_ATIVO_A, IPAQ.IRREGULARMENTE_ATIVO_B,
-                       IPAQ.SEDENTARIO]:
-        return make_response({
-            "error_message": "Erro ao calcular IPAC.",
-            "ipaq_result": ipaq_result.value
-        }, 500)
-
     if not parq_result:
         return make_response({
             "error_message": "Erro ao calcular Parq."

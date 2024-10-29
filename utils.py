@@ -515,90 +515,44 @@ def calculate_ipaq(ipaq):
     caminhada_minutos = sum([int(minutos2), int(minutos5), int(minutos9)]) + (caminhada_hora * 60)
     caminhada_dia = sum([int(ipaq.get('1f')),
                          int(ipaq.get('2e')),
-                         int(ipaq.get('4a'))]) / 3
+                         int(ipaq.get('4a'))])
 
     moderada_hora = sum([int(horas1), int(horas7), int(horas8), int(horas11)])
     moderada_minutos = sum([int(minutos1), int(minutos7), int(minutos8), int(minutos11)]) + (moderada_hora * 60)
     moderada_dia = sum([int(ipaq.get('1d')),
                         int(ipaq.get('3c')),
                         int(ipaq.get('3e')),
-                        int(ipaq.get('4e'))]) / 3
+                        int(ipaq.get('4e'))])
+
     qualquer_atividade_hora = int(horas4)
     qualquer_atividade_minutos = int(minutos4) + (qualquer_atividade_hora * 60)
     qualquer_atividade_dia = int(ipaq.get('2c'))
 
+    soma_dias = sum([vigorosa_dia, moderada_dia, caminhada_dia, qualquer_atividade_dia])
+    soma_horas = sum([vigorosa_hora, moderada_hora, caminhada_hora, qualquer_atividade_hora])
 
-# CLASSIFICAÇÃO FINAL
-    def ma1(muito_ativo_a):
-        if (int(vigorosa_dia) >= 5 and int(vigorosa_minutos) >= 150):
-            ma1 = True
-        else:
-            False
+    # Verificação
 
-    def ma2(muito_ativo_b):
-        if (int(vigorosa_dia) >= 3 and int(vigorosa_minutos) >= 60 and int(moderada_dia) >= 5
-            and int(moderada_minutos) >= 150) and (vigorosa_dia >= 3 and vigorosa_minutos >= 60 and caminhada_dia >= 5
-                                                   and caminhada_minutos >= 150):
-            ma2 = True
-        else:
-            False
-
-
-
-    muito_ativo = int(vigorosa_dia) >= 5 and int(vigorosa_minutos) >= 150 or int(vigorosa_dia) >= 3 and int(vigorosa_minutos) >= \
-                  60 and int(moderada_dia) >= 5 and int(moderada_minutos) >= 150 or \
-                    vigorosa_dia >= 3 and vigorosa_minutos >= 60 and caminhada_dia >= 5 and caminhada_minutos >= 150
-
-    a1 = int(vigorosa_dia) >= 3 and int(vigorosa_minutos) >= 60
-    a2 = int(moderada_dia) >= 5 and int(moderada_minutos) >= 150
-    a3 = (int(vigorosa_dia) + int(moderada_dia) + int(caminhada_dia) + int(qualquer_atividade_dia)) >=5 and \
-         (int(vigorosa_minutos) + int(moderada_minutos) + int(caminhada_minutos) + int(qualquer_atividade_minutos)) >= 150
-
-    ativo = vigorosa_dia >= 3 and vigorosa_minutos >= 60 or moderada_dia >= 5 and moderada_minutos >= 150 or \
-              caminhada_dia >= 5 and caminhada_minutos >= 150 or (int(vigorosa_dia) + int(moderada_dia) +
-                                                                  int(caminhada_dia) + int(qualquer_atividade_dia)) >=5 and \
-              (int(vigorosa_minutos) + int(moderada_minutos) + int(caminhada_minutos) + int(qualquer_atividade_minutos))\
-              >= 150
-
-    i1 = (int(vigorosa_dia) + int(moderada_dia) + int(caminhada_dia) + int(qualquer_atividade_dia)) >=5
-    i2 = (int(vigorosa_minutos) + int(moderada_minutos) + int(caminhada_minutos) + int(qualquer_atividade_minutos)) >= 150
-
-    irregularmente_ativo_a = (int(vigorosa_dia) + int(moderada_dia) + int(caminhada_dia) + int(qualquer_atividade_dia))\
-                             >=5 or (int(vigorosa_minutos) + int(moderada_minutos) + int(caminhada_minutos) +
-                              int(qualquer_atividade_minutos)) >= 150
-
-    ia1 = (int(vigorosa_dia) + int(moderada_dia) + int(caminhada_dia) + int(qualquer_atividade_dia)) < 5
-    ia2 = (int(vigorosa_minutos) + int(moderada_minutos) + int(caminhada_minutos) + int(qualquer_atividade_minutos))  < 150
-    irregularmente_ativo_b = (int(vigorosa_dia) + int(moderada_dia) + int(caminhada_dia) + int(qualquer_atividade_dia)) \
-                             < 5 or (int(vigorosa_minutos) + int(moderada_minutos) + int(caminhada_minutos) +
-                                     int(qualquer_atividade_minutos))  < 150
-
-    s = (int(vigorosa_minutos) + int(moderada_minutos) + int(caminhada_minutos) +
-                  int(qualquer_atividade_minutos)) < 10
-
-    sedentario = (int(vigorosa_minutos) + int(moderada_minutos) + int(caminhada_minutos) +
-                  int(qualquer_atividade_minutos)) < 10
-
-    if ma1 is True:
+    muito_ativo_a = vigorosa_dia >= 5 and vigorosa_minutos >= 150
+    muito_ativo_b = vigorosa_dia >= 3 and vigorosa_minutos >= 60
+    muito_ativo_c = caminhada_dia >= 5 and caminhada_minutos >= 150
+    if (muito_ativo_a or muito_ativo_b or muito_ativo_c):
         return IPAQ.MUITO_ATIVO
-    elif ma2 is True:
-        return IPAQ.MUITO_ATIVO
-    elif a1 is True:
+
+    ativo_a = vigorosa_dia >= 3 and vigorosa_minutos >= 60
+    ativo_b = moderada_dia >= 5 and moderada_minutos >= 150
+    ativo_c = caminhada_dia >= 5 and caminhada_minutos >= 150
+    ativo_d = qualquer_atividade_dia >= 5 and qualquer_atividade_minutos >= 150
+    if (ativo_a or ativo_b or ativo_c or ativo_d):
         return IPAQ.ATIVO
-    elif a2 is True:
-        return IPAQ.ATIVO
-    elif a3 is True:
-        return IPAQ.ATIVO
-    elif i1 is True:
+
+    if (soma_dias >= 5 and soma_horas >= 150):
         return IPAQ.IRREGULARMENTE_ATIVO_A
-    elif i2 is True:
-        return IPAQ.IRREGULARMENTE_ATIVO_A
-    elif ia1 is True:
+
+    if (soma_dias < 5 and soma_horas < 150):
         return IPAQ.IRREGULARMENTE_ATIVO_B
-    elif ia2 is True:
-        return IPAQ.IRREGULARMENTE_ATIVO_B
-    elif s is True:
-        return IPAQ.SEDENTARIO
+
+    return IPAQ.SEDENTARIO
 
 # def vo2_max():
 #     velocidade = input(int('Velocidade em km/h do ultimo esstágio completado'))
