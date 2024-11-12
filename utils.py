@@ -529,7 +529,7 @@ def calculate_ipaq(ipaq):
     qualquer_atividade_dia = int(ipaq.get('2c'))
 
     soma_dias = sum([vigorosa_dia, moderada_dia, caminhada_dia, qualquer_atividade_dia])
-    soma_horas = sum([vigorosa_hora, moderada_hora, caminhada_hora, qualquer_atividade_hora])
+    soma_minutos = sum([vigorosa_minutos, moderada_minutos, caminhada_minutos, qualquer_atividade_minutos])
 
     # Verificação
 
@@ -546,12 +546,12 @@ def calculate_ipaq(ipaq):
     if (ativo_a or ativo_b or ativo_c or ativo_d):
         return IPAQ.ATIVO
 
-    if (soma_dias >= 5 and soma_horas >= 150):
+    if (soma_dias >= 5 or soma_minutos >= 150):
         return IPAQ.IRREGULARMENTE_ATIVO_A
 
-    if (soma_dias < 5 and soma_horas < 150):
+    if (soma_minutos > 10 and (soma_dias < 5 or soma_minutos < 150)):
         return IPAQ.IRREGULARMENTE_ATIVO_B
-
+    
     return IPAQ.SEDENTARIO
 
 # def vo2_max():

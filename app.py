@@ -34,12 +34,6 @@ def verify():
             "error_message": "Erro ao calcular Parq."
         }, 500)
 
-    if (imc_status != IMC.NORMAL):
-        return make_response({
-            "error_message": "Erro ao calcular IMC.",
-            "imc_status": imc_status.value
-        }, 500)
-
     # colocar todos os status na funcao
     status = calculate_status(
         idade = idade,
