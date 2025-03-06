@@ -1,5 +1,7 @@
+import gspread
 from datetime import datetime
 from enum import Enum
+from google.oauth2 import service_account
 
 class Status(Enum):
     SLAUGHTER = "slaughter"

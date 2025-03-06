@@ -1,8 +1,7 @@
 from flask import Flask, make_response, request
 from utils import *
-from google.oauth2 import service_account
-import gspread
 
+app = Flask("flask_app")
 
 @app.route("/dados", methods=["POST"])
 def get_dados():
@@ -14,21 +13,19 @@ def get_dados():
     if not dados['anamnese'] and not dados['ipaq'] and not dados['parq']:
         return make_response({
             "error_message": "Nenhum dado encontrado para o email fornecido."
-        }, 404)
+        }, 500)
 
-    return make_response(dados, 200)
+    # TODO Remover
+    return make_response({
+        "dados": dados
+    }, 200)
 
-
-@app.route("/verify", methods=["POST"])
-def verify():
-    request_data = request.json
-
-    altura = request_data["altura"]
-    peso = request_data["peso"]
-    nascimento = request_data["nascimento"]
-    genero = request_data["genero"]
-    ipaq = request_data["ipaq"]
-    parq = request_data["parq"]
+    altura = dados['anamnese']["altura"]
+    peso = dados['anamnese']["peso"]
+    nascimento = dados['anamnese']["nascimento"]
+    genero = dados['anamnese']["genero"]
+    ipaq = dados['ipaq']
+    parq = dados['parq']
 
     # criar função para calcular a idade 1990-01-20
     idade = calculate_age(nascimento=nascimento)
