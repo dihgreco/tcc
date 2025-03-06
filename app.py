@@ -1,7 +1,23 @@
 from flask import Flask, make_response, request
 from utils import *
+from google.oauth2 import service_account
+import gspread
 
-app = Flask("flask_app")
+
+@app.route("/dados", methods=["POST"])
+def get_dados():
+    request_data = request.json
+    email = request_data["email"]
+
+    dados = receber_dados(email)
+
+    if not dados['anamnese'] and not dados['ipaq'] and not dados['parq']:
+        return make_response({
+            "error_message": "Nenhum dado encontrado para o email fornecido."
+        }, 404)
+
+    return make_response(dados, 200)
+
 
 @app.route("/verify", methods=["POST"])
 def verify():

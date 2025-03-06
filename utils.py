@@ -554,6 +554,33 @@ def calculate_ipaq(ipaq):
     
     return IPAQ.SEDENTARIO
 
+# RECEBER DADOS DO FORMS
+def receber_dados(email):
+    scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+    credentials = service_account.Credentials.from_service_account_file('unique-provider-451418-a7-f5c5e75273e3.json', scopes=scope)
+    client = gspread.authorize(credentials)
+
+    anamnese = client.open("Anamnese (respostas)").sheet1
+    ipaq = client.open("IPAQ (QUESTIONARIO INTERNACIONAL DE ATIVIDADE FISICA) (respostas)").sheet1
+    parq = client.open("PAR-Q(Questionário de Prontidão para Atividade Física) (respostas)").sheet1
+
+    def search_by_email(sheet, email):
+        records = sheet.get_all_records()
+        for record in records:
+            if record.get('Email') == email:
+                return record
+        return None
+
+    anamnese_data = search_by_email(anamnese, email)
+    ipaq_data = search_by_email(ipaq, email)
+    parq_data = search_by_email(parq, email)
+
+    return {
+        'anamnese': anamnese_data,
+        'ipaq': ipaq_data,
+        'parq': parq_data
+    }
+
 # def vo2_max():
 #     velocidade = input(int('Velocidade em km/h do ultimo esstágio completado'))
 #     vo2_max_ = 31.025 + (3.238 * velocidade) - (3.248 * anos) + (0.1536 * anos * velocidade)
